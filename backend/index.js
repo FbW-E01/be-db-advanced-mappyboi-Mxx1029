@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import requestlogger from "./middleware/requestlogger.js";
+import { getAllNotifications, saveNotification } from './data.js';
 
 dotenv.config();
 const app = express();
@@ -11,12 +12,14 @@ app.use(requestlogger);
 
 app.get("/notifications", (req, res) => {
   // Somehow load data from DB
+  getAllNotifications();
   res.json([]);
 });
 
 app.post("/notifications", (req, res) => {
   console.log("Received", req.body);
   // Somehow save data to DB
+  saveNotification(req.body)
   res.status(201);
   res.json({ success: true });
 });
