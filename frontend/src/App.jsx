@@ -14,6 +14,7 @@ dotenv.config();
 export default function App() {
   const [position, setPosition] = useState(null);
   const [desc, setDesc] = useState(null);
+  const [reports, setReports] = useState([]);
 
   // Configure leaflet Marker icon - without this it is broken 💩
   // Wow this kind of sucks and was super hard to find!
@@ -43,12 +44,18 @@ export default function App() {
     } else {
       alert("Report failed", result)
     }
-    console.log(result)
+    // console.log(result)
+  }
 
-    console.log(position.lat);
-    console.log(position.lng);
-
-    
+  async function getReports() {
+    const url = process.env.REACT_APP_BACKEND + 'notifications';
+      const resultRep = await axios.get(url);
+      console.log(resultRep);
+      if (resultRep.data) {
+        setReports(JSON.stringify(resultRep.data))
+      } else {
+        console.log("getting reports failed!")
+      }
   }
 
   return (
@@ -63,6 +70,13 @@ export default function App() {
           placeholder="Write short description here"
         >{desc}</textarea>
         <button onClick={report}>Send report</button>
+        <button onClick={getReports}>Get all reports</button>
+        {/* <div>{JSON.stringify(reports)}</div> */}
+        {/* <div>{reports.map(rep => {
+          return(
+            <p>{rep.position}; {rep.description}</p>
+          )
+        })}</div> */}
       </div>
     </div>
   );
