@@ -10,13 +10,16 @@ const notificationSchema = new mongoose.Schema({
     //     type: [Number],
     //     required: true
     // }
-    position: {},
+    position: String,
     description: String
+    // Joel's solution
+    // position: String, // turns it into a string in the frontend
+    // description: String
 })
 
-notificationSchema.statics.getAll() = function() {
-    return this.find().exec();
-}
+// notificationSchema.statics.getAll() = function() {
+//     return this.find().exec();
+// }
 
 const Notification = mongoose.model("notifications", notificationSchema);
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import React from "react";
 import L from "leaflet";
 import dotenv from "dotenv";
+import axios from 'axios';
 
 import "leaflet/dist/leaflet.css";
 import "./main.css";
@@ -19,24 +20,35 @@ export default function App() {
   const DefaultIcon = L.icon({ iconUrl: icon, shadowUrl: null  });
   L.Marker.prototype.options.icon = DefaultIcon;
 
-  console.log("BACKEND RUNNING AT", process.env.REACT_APP_BACKEND);
+  console.log("BACKEND RUNNING AT " + process.env.REACT_APP_BACKEND);
 
-  function report() {
+  async function report() { // async comes from Joel's solution
     // TODO: Send abandoned bicycle report to the backend
-    const url = 'http://localhost:8080/notifications';
-    // ${process.env.REACT_APP_BACKEND}
-  
+    const url = process.env.REACT_APP_BACKEND + 'notifications';
+    
     const options = {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify({ position, desc })
+      // this seems not to work
+      // headers: { "Content-Type": "application/json" },
+      // method: "POST",
+      // body: JSON.stringify({ position: position.lat + ", " + position.lng,
+      //  description: desc })
+      // using Joel's solution here:
+      position: position.lat + ", " + position.lng,
+      description: desc
     };
-    fetch(url, options);
 
-    alert(`Thank you for your contribution! We added to our database: \nThe position of the abandoned bike: ${position}. \nYour given description: ${desc}.`);
+    const result = await axios.post(url, options);
+    if (result.data && result.data.success) {
+      alert(`Thank you for your contribution! We added to our database: \nThe position of the abandoned bike: ${position.lat + ", " + position.lng}. \nYour given description: ${desc}.`);
+    } else {
+      alert("Report failed", result)
+    }
+    console.log(result)
 
     console.log(position.lat);
     console.log(position.lng);
+
+    
   }
 
   return (
