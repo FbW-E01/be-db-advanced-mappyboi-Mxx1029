@@ -27,36 +27,46 @@ export default function App() {
     // TODO: Send abandoned bicycle report to the backend
     const url = process.env.REACT_APP_BACKEND + 'notifications';
     
-    const options = {
-      // this seems not to work
-      // headers: { "Content-Type": "application/json" },
-      // method: "POST",
-      // body: JSON.stringify({ position: position.lat + ", " + position.lng,
-      //  description: desc })
-      // using Joel's solution here:
+    const newReport = {
       position: position.lat + ", " + position.lng,
       description: desc
     };
+        // this all is only needed if you fetch()
+        // const init = {
+            // headers: { "Content-Type": "application/json" },
+            // method: "POST",
+            // body: JSON.stringify(newReport)
+        // }
+        // fetch(url, init)
+            // .then(response => response.json())
+            // .then(result => alert('Thank you...'))
+            // .catch(err => console.log("Error ", err))
 
-    const result = await axios.post(url, options);
-    if (result.data && result.data.success) {
-      alert(`Thank you for your contribution! We added to our database: \nThe position of the abandoned bike: ${position.lat + ", " + position.lng}. \nYour given description: ${desc}.`);
-    } else {
-      alert("Report failed", result)
+    // const result = await axios.post(url, newReport)
+    // if (result.data && result.data.success) {
+    // } else {
+    //     alert("Report failed", result.data)
+    // }
+    // shorter version:
+    await axios.post(url, newReport)
+        .then(result => {
+            console.log(result.data);
+            alert(`Thank you for your contribution! We added to our database: \nThe position of the abandoned bike: ${position.lat + ", " + position.lng}. \nYour given description: ${desc}.`);
+            // setPosition(null);
+            // setDesc("");
+        })
+        .catch(e => alert("Report failed", e))
+  }
+
+    async function getReports() {
+        const url = process.env.REACT_APP_BACKEND + 'notifications';
+        await axios.get(url)
+            .then(result => {
+                console.log(result.data);
+                setReports(result.data);
+            })
+            .catch(e => console.log("getting reports failed!", e))
     }
-    // console.log(result)
-  }
-
-  async function getReports() {
-    const url = process.env.REACT_APP_BACKEND + 'notifications';
-      const resultRep = await axios.get(url);
-      console.log(resultRep);
-      if (resultRep.data) {
-        setReports(JSON.stringify(resultRep.data))
-      } else {
-        console.log("getting reports failed!")
-      }
-  }
 
   return (
     <div className="form">
@@ -71,12 +81,11 @@ export default function App() {
         >{desc}</textarea>
         <button onClick={report}>Send report</button>
         <button onClick={getReports}>Get all reports</button>
-        {/* <div>{JSON.stringify(reports)}</div> */}
-        {/* <div>{reports.map(rep => {
+        <div>{reports.map(rep => {
           return(
-            <p>{rep.position}; {rep.description}</p>
+            <p key={rep._id}>{rep.position}; {rep.description}</p>
           )
-        })}</div> */}
+        })}</div>
       </div>
     </div>
   );

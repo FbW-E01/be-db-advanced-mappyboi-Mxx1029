@@ -11,7 +11,7 @@
 
 .form-fields {
     background: lightblue;
-    padding: 10em;
+    padding: 5em;
     min-height: 500px;
 }
 
@@ -20,4 +20,10 @@ textarea {
     margin: 2em 0;
     padding: 0;
     height: 4em;
+}
+
+button {
+    width: 100%;
+    padding: 0.5em;
+    margin: 0.5em 0;
 }
