@@ -52,8 +52,8 @@ export default function App() {
         .then(result => {
             console.log(result.data);
             alert(`Thank you for your contribution! We added to our database: \nThe position of the abandoned bike: ${position.lat + ", " + position.lng}. \nYour given description: ${desc}.`);
-            // setPosition(null);
-            // setDesc("");
+            setPosition(null);
+            setDesc("");
         })
         .catch(e => alert("Report failed", e))
   }
@@ -76,9 +76,10 @@ export default function App() {
         {position && <>GPS: {position.lat}, {position.lng}</>}
         <br />
         <textarea
-          onChange={e=>setDesc(e.target.value)}
+          onChange={ e => setDesc(e.target.value)}
           placeholder="Write short description here"
-        >{desc}</textarea>
+          value={desc}
+        ></textarea>
         <button onClick={report}>Send report</button>
         <button onClick={getReports}>Get all reports</button>
         <div>{reports.map(rep => {
